@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title%}Transactions{% endblock %}
+{% block content %}
+    <form method="post" enctype="multipart/form-data", action="/upload">
+      <input type=file name=file>
+    <select name="bank">
+          <option value="Chase">Chase</option>
+          <option value="fccu">FCCU</option>
+    </select>
+      <input type=submit value=Upload>
+    </form>
+{% endblock %}
