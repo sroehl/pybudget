@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +23,9 @@ class Budget(Base):
 
 class Transactions(Base):
     __tablename__ = 'transactions'
-
+    __table_args__ = (
+        UniqueConstraint('date', 'month', 'vendor', 'amount', name='unique_transaction'),
+    )
     id = Column(Integer, primary_key=True)
     date = Column(String)
     month = Column(String)

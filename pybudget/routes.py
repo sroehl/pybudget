@@ -1,11 +1,9 @@
 from pybudget import app, ALLOWED_EXTENSIONS
 from flask import render_template, request, redirect, url_for, flash
 from pybudget.helpers import get_summaries
+from pybudget.api_helpers import valid_transaction_entry
+from pybudget.Transactions import add_api_transaction
 
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 @app.route('/budget')
@@ -24,22 +22,12 @@ def rules():
     return render_template('rules.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'file' not in request.files:
-        flash('File not in upload')
-        return redirect(url_for('transactions'))
-    file = request.files['file']
-    bank = request.form.get('bank', None)
-    if bank is None:
-        flash('No bank!')
-        return redirect(url_for('transactions'))
-    if file.filename == '':
-        flash('No selected file')
-        return redirect(url_for('transactions'))
-    if file and allowed_file(file.filename):
-        file.sa
-
+@app.route('/api/transactions', methods=['POST'])
+def api_transactions():
+    json = request.get_json(True)
+    added, invalid = add_api_transaction(json)
+    return_json = {'added': added, 'invalid': invalid}
+    return return_json
 
 
 @app.errorhandler(404)
