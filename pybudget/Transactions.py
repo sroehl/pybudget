@@ -85,7 +85,7 @@ def add_api_transaction(json):
             print(ex)
             added = -1
         except sqlalchemy.exc.IntegrityError as ex:
-            # TODO: This should remove rows from added if they weren't added
+            # TODO: This should be optimized to so we aren't getting new sessions all of the time
             session = get_session()
             print(ex)
     return added, invalid
