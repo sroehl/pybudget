@@ -35,9 +35,9 @@ def get_summaries(month):
         if budget.name in spents:
             summary[budget.name]['spent'] = spents[budget.name] * 1.0
             summary[budget.name]['left'] = budget.amount - spents[budget.name]
-            summary[budget.name]['percent'] = round(summary[budget.name]['left']/summary[budget.name]['amount'] * 100.0, 2)
+            summary[budget.name]['percent'] = round(spents[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
         if budget.name in mades:
             summary[budget.name]['made'] = mades[budget.name] * 1.0
             summary[budget.name]['left'] = budget.amount - mades[budget.name]
-            summary[budget.name]['percent'] = round(summary[budget.name]['left']/summary[budget.name]['amount'] * 100.0, 2)
+            summary[budget.name]['percent'] = round(mades[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
     return summary
