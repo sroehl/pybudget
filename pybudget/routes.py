@@ -1,8 +1,9 @@
-from pybudget import app, ALLOWED_EXTENSIONS
-from flask import render_template, request, redirect, url_for, flash
+from datetime import datetime
+
+from pybudget import app
+from flask import render_template, request
 from pybudget.helpers import get_summaries
-from pybudget.api_helpers import valid_transaction_entry
-from pybudget.Transactions import add_api_transaction
+from pybudget.Transactions import add_api_transaction, get_transactions
 
 
 @app.route('/')
@@ -14,7 +15,10 @@ def budget():
 
 @app.route('/transactions')
 def transactions():
-    return render_template('transactions.html')
+    d = datetime.today()
+    month = str(d.month) + str(d.year)[2:4]
+    month_trans = get_transactions(month)
+    return render_template('transactions.html', transactions=month_trans)
 
 
 @app.route('/rules')

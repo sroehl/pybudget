@@ -11,7 +11,15 @@ def get_transactions(month, category=None, flow=None):
         query = query.filter(Transactions.category == category)
     if flow is not None:
         query = query.filter(Transactions.flow == flow)
-    return query.all()
+    transactions = []
+    for row in query.all():
+        dict_item = row.__dict__
+        transaction = {'date': dict_item['date'],
+                       'name': dict_item['vendor'],
+                       'category': dict_item['category'],
+                       'amount': dict_item['amount']}
+        transactions.append(transaction)
+    return transactions
 
 
 def get_totals(month, category, flow):
@@ -30,12 +38,12 @@ def get_totals(month, category, flow):
 
 def get_expense_totals(month, category=None):
     session = get_session()
-    return get_totals(month, category, EXPENSE, session)
+    return get_totals(month, category, EXPENSE)
 
 
 def get_income_totals(month, category=None):
     session = get_session()
-    return get_totals(month, category, INCOME, session)
+    return get_totals(month, category, INCOME)
 
 
 def remove_transaction(id):

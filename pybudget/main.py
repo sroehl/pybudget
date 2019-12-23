@@ -1,6 +1,5 @@
 from pybudget import DB, helpers
-from pybudget.loaders.ChaseLoader import ChaseLoader
-from pybudget.loaders.FCCULoader import FCCULoader
+
 
 from pybudget import app
 
@@ -45,7 +44,8 @@ def test_transactions(session):
         ['12/05/2019', '1219', 'BP', 34.26, '', DB.EXPENSE, 'Gas']
     ]
     for item in transactions:
-        temp_t = DB.Transactions(date=item[0], month=item[1], store=item[2], amount=item[3], notes=item[4], flow=item[5], category=item[6])
+        temp_t = DB.Transactions(date=item[0], month=item[1], vendor=item[2], amount=item[3], notes=item[4],
+                                 flow=item[5], category=item[6])
         session.add(temp_t)
     session.commit()
 
@@ -69,7 +69,7 @@ def test():
     session = DB.get_session()
     test_budget(session)
     clear_transactions(session)
-    #test_transactions(session)
+    test_transactions(session)
     test_category_rules(session)
     session.close()
     #ChaseLoader('/home/steve/Downloads/cc/0609_1214.csv').add_to_transactions()
