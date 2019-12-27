@@ -1,7 +1,10 @@
+import re
+
 import sqlalchemy.exc
 
 from pybudget.DB import Transactions, EXPENSE, INCOME, get_session
 from pybudget.api_helpers import valid_transaction_entry
+from pybudget.Budget import get_rules
 
 
 def get_transactions(month, category=None, flow=None):
@@ -17,7 +20,8 @@ def get_transactions(month, category=None, flow=None):
         transaction = {'date': dict_item['date'],
                        'name': dict_item['vendor'],
                        'category': dict_item['category'],
-                       'amount': dict_item['amount']}
+                       'amount': dict_item['amount'],
+                       'id': dict_item['id']}
         transactions.append(transaction)
     return transactions
 
@@ -54,6 +58,21 @@ def remove_transaction(id):
     transaction = transaction_query.all()[0]
     session.delete(transaction)
     return True
+
+
+def refresh_transactions(month):
+    rules = get_rules()
+    session = get_session()
+    query = session.query(Transactions).filter(Transactions.month == month)
+    for row in query.all():
+        dict_row = row.__dict__
+        for rule in rules:
+            print("checking {} against {}".format(dict_row['vendor'], rule['regex']))
+            if re.match(rule['regex'], str.lower(dict_row['vendor'])):
+                print("updating {} to category {}".format(dict_row['vendor'], rule['category']))
+                row.category = rule['category']
+                break
+    session.commit()
 
 
 def add_imported_transaction(date, month, vendor, amount, category, session, flow=EXPENSE):

@@ -28,11 +28,49 @@
 
 <script>
     $(document).ready( function () {
-        $('#trans-table').DataTable( {
+        var table = $('#trans-table').DataTable( {
             "order": [[0, "asc"]]
+        });
+
+        // Initialize selects
+        $('select').formSelect();
+
+        $('.modal').modal();
+
+        $('#trans-table tbody').on('click', 'tr', function() {
+            var data = table.row(this).data();
+            $("#transVendorInput").val(data[1]);
+            $("#categorySelect option[value='" + data[2] + "']").prop('selected', true);
+            $('select').formSelect();
+            $('#transactionEditModal').modal('open');
+        });
+
+        $('#saveBtn').on('click', function() {
+            $.post('/rules', $('#ruleForm').serialize());
+            $('#transactionEditModal').modal('close');
         });
     } );
 
-
 </script>
+
+<!-- Modal Structure -->
+<div id="transactionEditModal" class="modal">
+    <div class="modal-content">
+        <form id="ruleForm">
+            <input name="vendorRegex" id="transVendorInput" type="text">
+            <label for="transVendorInput">Vendor</label>
+            <br>
+            <select name="category" id="categorySelect">
+                <option value="" disabled>Choose a category</option>
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+            <label>Category</label>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a id="saveBtn" class="modal-close waves-effect waves-green btn-flat">Save</a>
+    </div>
+</div>
 {% endblock %}
