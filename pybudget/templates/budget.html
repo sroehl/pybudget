@@ -7,9 +7,16 @@
           <div class="col">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">{{ name }}</h5>
-                <div id="ldBar{{ name }}" class="ldBar label-center" data-preset="circle" data-value="{{ summaries[name]['percent'] }}"></div>
-                <div class="text-center">{{ summaries[name]['made'] }}/{{ summaries[name]['amount'] }}</div>
+                  <h5 class="card-title">{{ name }}</h5>
+                  <div id="ldBar{{ name }}" class="ldBar label-center" data-preset="circle"
+                       data-value="{{ summaries[name]['percent'] }}"></div>
+                  {% if 'made' in summaries[name] %}
+                  <div class="text-center">{{ summaries[name]['made'] }}/{{ summaries[name]['amount'] }}</div>
+                  {% elif 'spent' in summaries[name] %}
+                  <div class="text-center">{{ summaries[name]['spent'] }}/{{ summaries[name]['amount'] }}</div>
+                  {% else %}
+                  <div class="text-center">0.00/{{ summaries[name]['amount'] }}</div>
+                  {% endif %}
               </div>
             </div>
           </div>
