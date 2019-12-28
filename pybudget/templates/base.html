@@ -25,7 +25,6 @@
     }
     .ldBar path.mainline {
       stroke-width: 10;
-      stroke: #09f;
       stroke-linecap: round;
     }
 
@@ -34,6 +33,7 @@
 </head>
 
 <body>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="js/vendor/modernizr-3.7.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -61,6 +61,7 @@
 <div class="container">
   <nav>
     <div class="nav-wrapper">
+      <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <a href="#" class="brand-logo right">PyBudget</a>
       <ul id="nav-mobile" class="left hide-on-med-and-down">
         <li><a href="/">Budget</a></li>
@@ -69,19 +70,31 @@
       </ul>
     </div>
   </nav>
+  <ul class="sidenav" id="mobile-nav">
+    <li><a href="/">Budget</a></li>
+    <li><a href="/transactions">Transactions</a></li>
+    <li><a href="/rules">Rules</a></li>
+  </ul>
   <h2 class="text-center">{% block title %}{% endblock %}</h2>
   {% with messages = get_flashed_messages() %}
   {% if messages %}
   <ul class=flashes>
     {% for message in messages %}
-      <li>{{ message }}</li>
+    <li>{{ message }}</li>
     {% endfor %}
-    </ul>
+  </ul>
   {% endif %}
-{% endwith %}
-    {% block content %}
-    {% endblock %}
-  </div>
+  {% endwith %}
+  {% block content %}
+  {% endblock %}
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
+  });
+
+</script>
 
 </body>
 

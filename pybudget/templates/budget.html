@@ -8,8 +8,17 @@
             <div class="card">
               <div class="card-body">
                   <h5 class="card-title">{{ name }}</h5>
-                  <div id="ldBar{{ name }}" class="ldBar label-center" data-preset="circle"
-                       data-value="{{ summaries[name]['percent'] }}"></div>
+                  {% if 'percent' in summaries[name] %}
+                  {% if summaries[name]['percent'] <= 50 %}
+                  {% set ldColor = 'green' %}
+                  {% elif 50 < summaries[name]['percent'] < 90 %}
+                  {% set ldColor = 'yellow' %}
+                  {% else %}
+                  {% set ldColor = 'red' %}
+                  {% endif %}
+                  {% endif %}
+                  <div id="ldBar{{ name }}" class="ldBar label-center" data-preset="circle" data-stroke="{{ ldColor }}"
+                       data-value="{{ summaries[name]['percent'] }}" style="stroke: {{ ldColor }}"></div>
                   {% if 'made' in summaries[name] %}
                   <div class="text-center">{{ summaries[name]['made'] }}/{{ summaries[name]['amount'] }}</div>
                   {% elif 'spent' in summaries[name] %}
