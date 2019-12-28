@@ -69,8 +69,8 @@ def test():
     session = DB.get_session()
     test_budget(session)
     # clear_transactions(session)
-    test_transactions(session)
-    #test_category_rules(session)
+    # test_transactions(session)
+    # test_category_rules(session)
     session.close()
     #ChaseLoader('/home/steve/Downloads/cc/0609_1214.csv').add_to_transactions()
     #ChaseLoader('/home/steve/Downloads/cc/6048_1214.csv').add_to_transactions()
@@ -80,5 +80,5 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    #test()
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -6,10 +6,10 @@ class Loader:
     def add_to_transactions(self):
         if len(self.transactions) == 0:
             return
-        month = self.transactions[0][0][0:2] + self.transactions[0][0][8:10]
         entries = []
         for transaction in self.transactions:
             date, vendor, amount, flow = transaction
+            month = date[0:2] + date[8:10]
             entry = {'date': date,
                      'month': month,
                      'vendor': vendor,

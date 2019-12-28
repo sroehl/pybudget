@@ -28,16 +28,28 @@ def get_summaries(month):
     budgets = get_budget(month)
     spents = get_totals(month, None, EXPENSE)
     mades = get_totals(month, None, INCOME)
+    total_spent = 0
+    total_made = 0
     summary = {}
     for budget in budgets:
         if budget.name not in summary:
             summary[budget.name] = {'amount': budget.amount, 'flow': budget.flow}
         if budget.name in spents:
-            summary[budget.name]['spent'] = spents[budget.name] * 1.0
+            total_spent += round(spents[budget.name] * 1.0, 2)
+            summary[budget.name]['spent'] = round(spents[budget.name] * 1.0, 2)
             summary[budget.name]['left'] = budget.amount - spents[budget.name]
-            summary[budget.name]['percent'] = round(spents[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
+            if summary[budget.name]['amount'] != 0:
+                summary[budget.name]['percent'] = round(spents[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
+            else:
+                summary[budget.name]['percent'] = 0
         if budget.name in mades:
+            total_made += round(mades[budget.name] * 1.0, 2)
             summary[budget.name]['made'] = mades[budget.name] * 1.0
             summary[budget.name]['left'] = budget.amount - mades[budget.name]
-            summary[budget.name]['percent'] = round(mades[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
+            if summary[budget.name]['amount'] != 0:
+                summary[budget.name]['percent'] = round(mades[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
+            else:
+                summary[budget.name]['percent'] = 0
+    summary['Total'] = {'amount': total_made, 'spent': round(total_spent, 2),
+                        'percent': round(total_spent / total_made * 100.0, 2)}
     return summary

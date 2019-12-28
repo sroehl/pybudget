@@ -29,7 +29,8 @@
 <script>
     $(document).ready( function () {
         var table = $('#trans-table').DataTable( {
-            "order": [[0, "asc"]]
+            "order": [[0, "asc"]],
+            "pageLength": 100
         });
 
         // Initialize selects

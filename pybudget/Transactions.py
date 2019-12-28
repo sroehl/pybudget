@@ -36,7 +36,12 @@ def get_totals(month, category, flow):
     query.group_by(Transactions.category)
     totals = {}
     for item in query.all():
-        totals[item[0]] = item[1]
+        cat = item[0]
+        if cat == '':
+            cat = 'Uncategorized'
+        if cat not in totals:
+            totals[cat] = 0
+        totals[cat] += item[1]
     return totals
 
 

@@ -1,4 +1,37 @@
 {% extends "base.html" %}
 {% block title%}Rules{% endblock %}
 {% block content %}
+<script>
+    $(document).ready( function () {
+        var table = $('#rules-table').DataTable( {
+            "order": [[0, "asc"]]
+        });
+
+        $('#deleteBtn').on('click', function() {
+            $.post('/rules', $('#ruleForm').serialize());
+            $('#transactionEditModal').modal('close');
+        });
+    } );
+
+
+</script>
+<table id="rules-table" class="display">
+    <thead>
+    <tr>
+        <th>Regex</th>
+        <th>Category</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for rule in rules %}
+    <tr>
+        <td>{{ rule['name'] }}</td>
+        <td>{{ rule['category'] }}</td>
+        <td><a id="deleteBtn" class="modal-close waves-effect waves-green btn-flat">Delete</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
