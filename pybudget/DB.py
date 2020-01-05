@@ -52,5 +52,5 @@ def get_session():
     return Session()
 
 
-engine = create_engine('sqlite:///budget.db', echo=True)
+engine = create_engine('sqlite:///budget.db', echo=False)
 Base.metadata.create_all(engine)

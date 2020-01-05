@@ -50,6 +50,9 @@ def get_summaries(month):
                 summary[budget.name]['percent'] = round(mades[budget.name] / summary[budget.name]['amount'] * 100.0, 2)
             else:
                 summary[budget.name]['percent'] = 0
+    total_percent = 0
+    if total_made > 0:
+        total_percent = round(total_spent / total_made * 100.0, 2)
     summary['Total'] = {'amount': total_made, 'spent': round(total_spent, 2),
-                        'percent': round(total_spent / total_made * 100.0, 2)}
+                        'percent': total_percent}
     return summary

@@ -7,21 +7,35 @@ from pybudget.Transactions import add_api_transaction, get_transactions, refresh
 from pybudget.Budget import get_categories, add_rule
 
 
-def get_month():
+def get_month(subtract=0):
     d = datetime.today()
-    return str(d.month) + str(d.year)[2:4]
+    month = d.month
+    year = d.year
+    if subtract > 0:
+        year_sub = int(subtract / 12)
+        month_sub = subtract % 12
+        year = year - year_sub
+        month = month - month_sub
+        if month < 1:
+            year = year - 1
+            month = month + 12
+    return str(month) + str(year)[2:4]
 
 
 @app.route('/')
 @app.route('/budget')
 def budget():
-    summaries = get_summaries('1219')
+    subtract = request.args.get('month', default=0, type=int)
+    month = get_month(subtract)
+    print("|{}|".format(month))
+    summaries = get_summaries(month)
     return render_template('budget.html', summaries=summaries)
 
 
 @app.route('/transactions')
 def transactions():
-    month = get_month()
+    subtract = request.args.get('month', default=0, type=int)
+    month = get_month(subtract)
     refresh_transactions(month)
     month_trans = get_transactions(month)
     categories = get_categories(month)
