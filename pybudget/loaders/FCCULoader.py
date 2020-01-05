@@ -38,16 +38,20 @@ class FCCULoader(Loader):
                     transaction[3] = INCOME
                 self.transactions.append(transaction)
 
-    def __init__(self, filename, url):
-        Loader.__init__(self, url)
+    def __init__(self, filename, url, username, password):
+        Loader.__init__(self, url, username, password)
         self.filename = filename
         self.read_file()
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    username = None
+    password = None
+    if len(sys.argv) == 5:
         url = sys.argv[2]
+        username = sys.argv[3]
+        password = sys.argv[4]
     else:
         url = 'http://192.168.0.109:5000'
-    fccu = FCCULoader(sys.argv[1], url)
+    fccu = FCCULoader(sys.argv[1], url, username, password)
     fccu.run()

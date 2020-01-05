@@ -65,20 +65,30 @@ def test_category_rules(session):
         session.add(temp_r)
     session.commit()
 
+
+def test_user(session):
+    if session.query(DB.User).filter_by(username='steve').count() != 1:
+        u = DB.User(username='steve', email='steve@steve.com')
+        u.set_password('steve')
+        session.add(u)
+        session.commit()
+
+
 def test():
     session = DB.get_session()
     test_budget(session)
-    # clear_transactions(session)
-    # test_transactions(session)
-    # test_category_rules(session)
+    clear_transactions(session)
+    test_transactions(session)
+    test_category_rules(session)
+    test_user(session)
     session.close()
-    #ChaseLoader('/home/steve/Downloads/cc/0609_1214.csv').add_to_transactions()
-    #ChaseLoader('/home/steve/Downloads/cc/6048_1214.csv').add_to_transactions()
-    #FCCULoader('/home/steve/Downloads/cc/fccu.csv').add_to_transactions()
+    # ChaseLoader('/home/steve/Downloads/cc/0609_1214.csv').add_to_transactions()
+    # ChaseLoader('/home/steve/Downloads/cc/6048_1214.csv').add_to_transactions()
+    # FCCULoader('/home/steve/Downloads/cc/fccu.csv').add_to_transactions()
 
     helpers.get_money_left('1219')
 
 
 if __name__ == '__main__':
-    #test()
+    test()
     app.run(debug=True, host='0.0.0.0', port=5000)

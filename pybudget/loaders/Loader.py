@@ -17,7 +17,7 @@ class Loader:
                      'flow': flow
                      }
             entries.append(entry)
-        r = requests.post(self.url, json=entries)
+        r = requests.post(self.url, json=entries, auth=(self.username, self.password))
         print('Sent to server: {}'.format(r.status_code))
         if r.status_code == 200:
             print('Added: {}'.format(r.json()['added']))
@@ -30,6 +30,8 @@ class Loader:
         self.read_file()
         self.add_to_transactions()
 
-    def __init__(self, url):
+    def __init__(self, url, username, password):
         self.transactions = []
+        self.username = username
+        self.password = password
         self.url = url + '/api/transactions'

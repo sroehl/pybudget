@@ -1,10 +1,13 @@
 from datetime import datetime
 
-from pybudget import app
+from pybudget import app, auth
 from flask import render_template, request, url_for, redirect, flash
+from flask_login import current_user, login_user, logout_user, login_required
+from pybudget.Login import LoginForm
 from pybudget.helpers import get_summaries
 from pybudget.Transactions import add_api_transaction, get_transactions, refresh_transactions
 from pybudget.Budget import get_categories, add_rule
+from pybudget.DB import User, get_session
 
 
 def get_month(subtract=0):
@@ -22,8 +25,35 @@ def get_month(subtract=0):
     return str(month) + str(year)[2:4]
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('budget'))
+    form = LoginForm()
+    print(form.username.data)
+    print(form.password.data)
+    if form.validate_on_submit():
+        user = get_session().query(User).filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid login')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_for(next_page).netloc != '':
+            next_page = url_for('budget')
+        return redirect(next_page)
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('budget'))
+
+
 @app.route('/')
 @app.route('/budget')
+@login_required
 def budget():
     subtract = request.args.get('month', default=0, type=int)
     month = get_month(subtract)
@@ -33,6 +63,7 @@ def budget():
 
 
 @app.route('/transactions')
+@login_required
 def transactions():
     subtract = request.args.get('month', default=0, type=int)
     month = get_month(subtract)
@@ -43,6 +74,7 @@ def transactions():
 
 
 @app.route('/rules', methods=['POST', 'GET'])
+@login_required
 def rules():
     if request.method == 'POST':
         form_vals = request.form
@@ -60,6 +92,7 @@ def rules():
 
 
 @app.route('/api/transactions', methods=['POST'])
+@auth.login_required
 def api_transactions():
     json = request.get_json(True)
     added, invalid = add_api_transaction(json)

@@ -17,16 +17,22 @@ class ChaseLoader(Loader):
                 transaction = [vals[0], vals[2], float(vals[5]) * -1, EXPENSE]
                 self.transactions.append(transaction)
 
-    def __init__(self, filename, url):
-        Loader.__init__(self, url)
+    def __init__(self, filename, url, username, password):
+        Loader.__init__(self, url, username, password)
         self.filename = filename
+        self.username = username
+        self.password = password
         self.read_file()
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    username = None
+    password = None
+    if len(sys.argv) == 5:
         url = sys.argv[2]
+        username = sys.argv[3]
+        password = sys.argv[4]
     else:
         url = 'http://192.168.0.109:5000'
-    chase = ChaseLoader(sys.argv[1], url)
+    chase = ChaseLoader(sys.argv[1], url, username, password)
     chase.run()
