@@ -22,7 +22,10 @@ def get_month(subtract=0):
         if month < 1:
             year = year - 1
             month = month + 12
-    return str(month) + str(year)[2:4]
+    str_month = str(month)
+    if len(str_month) == 1:
+        str_month = '0' + str_month
+    return str_month + str(year)[2:4]
 
 
 @app.route('/login', methods=['GET', 'POST'])

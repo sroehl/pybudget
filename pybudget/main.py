@@ -28,9 +28,9 @@ def test_budget(session):
     for item in steve_budget:
         temp_b = None
         if len(item) == 3:
-            temp_b = DB.Budget(month='1219', name=item[0], amount=item[1], flow=item[2])
+            temp_b = DB.Budget(month='0120', name=item[0], amount=item[1], flow=item[2])
         else:
-            temp_b = DB.Budget(month='1219', name=item[0], amount=item[1])
+            temp_b = DB.Budget(month='0120', name=item[0], amount=item[1])
         session.add(temp_b)
     session.commit()
 
