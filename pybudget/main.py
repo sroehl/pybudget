@@ -82,13 +82,10 @@ def test():
     test_category_rules(session)
     test_user(session)
     session.close()
-    # ChaseLoader('/home/steve/Downloads/cc/0609_1214.csv').add_to_transactions()
-    # ChaseLoader('/home/steve/Downloads/cc/6048_1214.csv').add_to_transactions()
-    # FCCULoader('/home/steve/Downloads/cc/fccu.csv').add_to_transactions()
 
     helpers.get_money_left('1219')
 
 
 if __name__ == '__main__':
-    test()
+    # test()
     app.run(debug=True, host='0.0.0.0', port=5000)

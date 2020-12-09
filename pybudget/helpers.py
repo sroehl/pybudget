@@ -1,3 +1,5 @@
+import re
+
 from pybudget.Transactions import get_totals
 from pybudget.Budget import get_budget
 from pybudget.DB import EXPENSE, INCOME, CategoryRules
@@ -56,3 +58,12 @@ def get_summaries(month):
     summary['Total'] = {'amount': total_made, 'spent': round(total_spent, 2),
                         'percent': total_percent}
     return summary
+
+
+def check_rules(rules, name):
+    for rule in rules:
+        print("checking {} against {}".format(name, rule['regex']))
+        if re.match(rule['regex'], str.lower(name)):
+            print("updating {} to category {}".format(name, rule['category']))
+            return rule['category']
+    return ''

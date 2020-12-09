@@ -1,3 +1,5 @@
+plaid-python
+python-dotenv
 wtforms
 Click==7.0
 Flask==1.1.1

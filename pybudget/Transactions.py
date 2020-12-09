@@ -1,13 +1,18 @@
+import json
 import re
-
+import datetime
 import sqlalchemy.exc
+from flask import jsonify
 
+import plaid
 from pybudget.DB import Transactions, EXPENSE, INCOME, get_session
 from pybudget.api_helpers import valid_transaction_entry
 from pybudget.Budget import get_rules
+from pybudget import client
 
 
 def get_transactions(month, category=None, flow=None):
+    print(month)
     session = get_session()
     query = session.query(Transactions).filter(Transactions.month == month)
     if category is not None:
@@ -121,3 +126,46 @@ def add_api_transaction(json):
             session = get_session()
             print(ex)
     return added, invalid
+
+
+def remote_import_transactions():
+    session = get_session()
+    # Pull transactions for the last 30 days
+    start_date = '{:%Y-%m-%d}'.format(datetime.datetime.now() + datetime.timedelta(-30))
+    end_date = '{:%Y-%m-%d}'.format(datetime.datetime.now())
+    rules = get_rules()
+    try:
+        # item_id = DgPQ0POqJrIEMLMrNxxPF4Z3jZnjPvFwyz1Kp
+        access_token = "access-development-7ae93fc0-c4f2-4f35-b2e2-952eeb011db7"
+        transactions_response = client.Transactions.get(access_token, start_date, end_date)
+        with open('transactions.json', 'w') as f:
+            f.write(json.dumps(transactions_response, indent=2, sort_keys=True))
+        print("Found {} transactions".format(transactions_response['total_transactions']))
+        for transaction in transactions_response['transactions']:
+            # category = check_rules(rules, transactions_response['name'])
+            category = ''
+            entry = Transactions(date=transaction['date'],
+                                 month=transaction['date'][5:7] + transaction['date'][2:4],
+                                 vendor=transaction['name'],
+                                 amount=transaction['amount'],
+                                 flow=EXPENSE,
+                                 category=category,
+                                 transaction_id=transaction['transaction_id'])
+            try:
+                session.add(entry)
+                session.commit()
+            except sqlalchemy.exc.IntegrityError:
+                # Just a duplicate entry, ignore it
+                session.rollback()
+                pass
+    except plaid.errors.PlaidError as e:
+        return jsonify(format_error(e))
+
+
+def pretty_print_response(response):
+    print(json.dumps(response, indent=2, sort_keys=True))
+
+
+def format_error(e):
+    return {'error': {'display_message': e.display_message, 'error_code': e.code, 'error_type': e.type,
+                      'error_message': e.message}}

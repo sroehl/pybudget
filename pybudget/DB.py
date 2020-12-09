@@ -27,7 +27,7 @@ class Budget(Base):
 class Transactions(Base):
     __tablename__ = 'transactions'
     __table_args__ = (
-        UniqueConstraint('date', 'month', 'vendor', 'amount', name='unique_transaction'),
+        UniqueConstraint('date', 'month', 'vendor', 'amount', 'transaction_id', name='unique_transaction'),
     )
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -39,6 +39,7 @@ class Transactions(Base):
     flow = Column(Integer, default=EXPENSE)
     category = Column(String)
     imported_vendor = Column(String)
+    transaction_id = Column(String)
 
 
 class CategoryRules(Base):
@@ -48,6 +49,15 @@ class CategoryRules(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     name = Column(String)
     category = Column(String)
+
+
+class Accounts(Base):
+    __tablename__ = 'accounts'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    name = Column(String)
+    access_token = Column(String)
 
 
 class User(UserMixin, Base):

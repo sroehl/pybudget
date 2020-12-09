@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pybudget import app, auth
+from pybudget import app, auth, Transactions
 from flask import render_template, request, url_for, redirect, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from pybudget.Login import LoginForm
@@ -33,17 +33,16 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('budget'))
     form = LoginForm()
-    print(form.username.data)
-    print(form.password.data)
     if form.validate_on_submit():
         user = get_session().query(User).filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid login')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_for(next_page).netloc != '':
-            next_page = url_for('budget')
+        # next_page = request.args.get('next')
+        # if not next_page or url_for(next_page).netloc != '':
+        next_page = url_for('budget')
+        print(next_page)
         return redirect(next_page)
     return render_template('login.html', form=form)
 
@@ -74,6 +73,13 @@ def transactions():
     month_trans = get_transactions(month)
     categories = get_categories(month)
     return render_template('transactions.html', transactions=month_trans, categories=categories)
+
+
+@app.route('/refreshTransactions')
+@login_required
+def update_transactions():
+    Transactions.remote_import_transactions()
+    return redirect(request.referrer)
 
 
 @app.route('/rules', methods=['POST', 'GET'])
