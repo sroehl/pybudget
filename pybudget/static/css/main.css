@@ -266,3 +266,18 @@ textarea {
 .text-center {
   text-align: center;
 }
+
+
+svg|a:link, svg|a:visited {
+  cursor: pointer;
+}
+
+svg|a text,
+text svg|a {
+  fill: blue; /* Even for text, SVG uses fill over color */
+  text-decoration: underline;
+}
+
+svg|a:hover, svg|a:active {
+  outline: dotted 1px blue;
+}

@@ -9,6 +9,19 @@ def get_budget(month, category=None):
     return query.all()
 
 
+def add_budget(month, name, amount, flow):
+    print("Adding {} with amount {} to month {}".format(name, amount, month))
+    try:
+        session = get_session()
+        budget = Budget(month=month, name=name, amount=amount, flow=flow)
+        session.add(budget)
+        session.commit()
+        return True
+    except Exception as ex:
+        print(ex)
+        return False
+
+
 def get_categories(month):
     session = get_session()
     results = session.query(Budget.name).filter(Budget.month == month).all()

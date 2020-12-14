@@ -6,8 +6,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from pybudget.Login import LoginForm
 from pybudget.helpers import get_summaries
 from pybudget.Transactions import add_api_transaction, get_transactions, refresh_transactions
-from pybudget.Budget import get_categories, add_rule
-from pybudget.DB import User, get_session
+from pybudget.Budget import get_categories, add_rule, add_budget
+from pybudget.DB import User, get_session, EXPENSE, INCOME
 
 
 def get_month(subtract=0):
@@ -54,10 +54,15 @@ def logout():
 
 
 @app.route('/')
-@app.route('/budget')
+@app.route('/budget', methods=['POST', 'GET'])
 @login_required
 def budget():
-    subtract = request.args.get('month', default=0, type=int)
+    if request.method == 'POST':
+        form_vals = request.form
+        add_budget(get_month(0), form_vals['name'], form_vals['amount'], EXPENSE)
+        subtract = 0
+    else:
+        subtract = request.args.get('month', default=0, type=int)
     month = get_month(subtract)
     print("|{}|".format(month))
     summaries = get_summaries(month)
